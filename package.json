@@ -1,24 +1,26 @@
 {
-  "name": "snap-html",
+  "name": "snap-website",
   "type": "module",
   "version": "0.0.0",
-  "description": "API to capture screenshots of HTML/URLs using Puppeteer",
+  "description": "API to capture screenshots of websites using Puppeteer",
   "author": "Maximiliano Garcia Mortigliengo",
   "license": "ISC",
-  "homepage": "https://github.com/MaxiGarcia13/snap-html#readme",
+  "homepage": "https://github.com/MaxiGarcia13/snap-website#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MaxiGarcia13/snap-html.git"
   },
   "bugs": {
-    "url": "https://github.com/MaxiGarcia13/snap-html/issues"
+    "url": "https://github.com/MaxiGarcia13/snap-website/issues"
   },
   "keywords": [
     "puppeteer",
     "node-js",
     "screenshot",
-    "html-to-image",
-    "url-to-png",
+    "website-to-image",
+    "website-to-png",
+    "website-to-jpeg",
+    "website-to-webp",
     "rest-api"
   ],
   "scripts": {
