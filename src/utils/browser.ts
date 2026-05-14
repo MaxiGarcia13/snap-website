@@ -1,7 +1,6 @@
-import type { LaunchOptions, Viewport } from 'puppeteer-core';
+import type { Viewport } from 'puppeteer-core';
 import process from 'node:process';
 import chromium from '@sparticuz/chromium';
-import puppeteer from 'puppeteer';
 import puppeteerCore from 'puppeteer-core';
 
 export async function getBrowser({ width = 1280, height = 720 }: { width?: number; height?: number }) {
@@ -21,7 +20,7 @@ export async function getBrowser({ width = 1280, height = 720 }: { width?: numbe
     chromium.setGraphicsMode = false;
 
     return puppeteerCore.launch({
-      args: puppeteer
+      args: puppeteerCore
         .defaultArgs({
           args: chromium.args,
           headless: 'shell',
@@ -31,6 +30,8 @@ export async function getBrowser({ width = 1280, height = 720 }: { width?: numbe
       headless,
     });
   }
+
+  const puppeteer = await import('puppeteer');
 
   return puppeteer.launch({ defaultViewport, headless });
 }
