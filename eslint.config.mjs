@@ -2,4 +2,7 @@ import { eslintConfig } from '@maxigarcia/eslint-config';
 
 export default eslintConfig({
   typescript: true,
+  rules: {
+    'antfu/no-top-level-await': 'off',
+  },
 });
