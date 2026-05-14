@@ -1,4 +1,4 @@
-name: Bump major on main
+name: Lint + Bump major + Deploy
 
 on:
   workflow_dispatch:
