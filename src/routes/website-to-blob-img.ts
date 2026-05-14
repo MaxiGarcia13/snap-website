@@ -1,20 +1,20 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import puppeteer from 'puppeteer';
 
-interface HtmlToBlobImgRequest {
+interface WebsiteToBlobImgQuery {
   url: string;
   format?: 'png' | 'jpeg' | 'webp';
 }
 
-const SCREENSHOT_FORMAT_TO_MIME: Record<NonNullable<HtmlToBlobImgRequest['format']>, string> = {
+const SCREENSHOT_FORMAT_TO_MIME: Record<NonNullable<WebsiteToBlobImgQuery['format']>, string> = {
   png: 'image/png',
   jpeg: 'image/jpeg',
   webp: 'image/webp',
 };
 
-export default async function htmlToBlobImg(fastify: FastifyInstance) {
-  fastify.get('/html-to-blob-img', async (
-    request: FastifyRequest<{ Querystring: HtmlToBlobImgRequest }>,
+export default async function websiteToBlobImg(fastify: FastifyInstance) {
+  fastify.get('/website-to-blob-img', async (
+    request: FastifyRequest<{ Querystring: WebsiteToBlobImgQuery }>,
     reply,
   ) => {
     const { url, format: formatParam = 'png' } = request.query;
@@ -30,7 +30,8 @@ export default async function htmlToBlobImg(fastify: FastifyInstance) {
       });
     }
 
-    const contentType = SCREENSHOT_FORMAT_TO_MIME[formatParam];
+    const format = formatParam as keyof typeof SCREENSHOT_FORMAT_TO_MIME;
+    const contentType = SCREENSHOT_FORMAT_TO_MIME[format];
 
     try {
       const browser = await puppeteer.launch();
@@ -39,7 +40,7 @@ export default async function htmlToBlobImg(fastify: FastifyInstance) {
       await page.goto(url);
       await page.content();
 
-      const blob = await page.screenshot({ type: formatParam });
+      const blob = await page.screenshot({ type: format });
       await browser.close();
 
       return reply.type(contentType).send(blob);
