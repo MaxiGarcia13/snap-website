@@ -1,7 +1,18 @@
 {
   "name": "snap-html",
+  "type": "module",
   "version": "0.0.0",
   "description": "API to capture screenshots of HTML/URLs using Puppeteer",
+  "author": "Maximiliano Garcia Mortigliengo",
+  "license": "ISC",
+  "homepage": "https://github.com/MaxiGarcia13/snap-html#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MaxiGarcia13/snap-html.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MaxiGarcia13/snap-html/issues"
+  },
   "keywords": [
     "puppeteer",
     "node-js",
@@ -10,18 +21,11 @@
     "url-to-png",
     "rest-api"
   ],
-  "homepage": "https://github.com/MaxiGarcia13/snap-html#readme",
-  "bugs": {
-    "url": "https://github.com/MaxiGarcia13/snap-html/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MaxiGarcia13/snap-html.git"
-  },
-  "license": "ISC",
-  "author": "Maximiliano Garcia Mortigliengo",
-  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "devDependencies": {
+    "@maxigarcia/eslint-config": "^1.5.0"
   }
 }
