@@ -6,26 +6,45 @@ interface HtmlToBlobImgRequest {
   format?: 'png' | 'jpeg' | 'webp';
 }
 
+const SCREENSHOT_FORMAT_TO_MIME: Record<NonNullable<HtmlToBlobImgRequest['format']>, string> = {
+  png: 'image/png',
+  jpeg: 'image/jpeg',
+  webp: 'image/webp',
+};
+
 export default async function htmlToBlobImg(fastify: FastifyInstance) {
   fastify.get('/html-to-blob-img', async (
     request: FastifyRequest<{ Querystring: HtmlToBlobImgRequest }>,
     reply,
   ) => {
-    const { url, format = 'png' } = request.query;
+    const { url, format: formatParam = 'png' } = request.query;
 
     if (!url) {
       return reply.status(400).send({ error: 'URL is required' });
     }
 
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
+    if (!(formatParam in SCREENSHOT_FORMAT_TO_MIME)) {
+      return reply.status(400).send({
+        error: 'Invalid format',
+        allowed: Object.keys(SCREENSHOT_FORMAT_TO_MIME),
+      });
+    }
 
-    await page.goto(url);
-    await page.content();
+    const contentType = SCREENSHOT_FORMAT_TO_MIME[formatParam];
 
-    const blob = await page.screenshot({ type: format });
-    await browser.close();
+    try {
+      const browser = await puppeteer.launch();
+      const page = await browser.newPage();
 
-    return reply.send(blob);
+      await page.goto(url);
+      await page.content();
+
+      const blob = await page.screenshot({ type: formatParam });
+      await browser.close();
+
+      return reply.type(contentType).send(blob);
+    } catch {
+      return reply.status(500).send({ error: 'Failed to capture screenshot' });
+    }
   });
 }
