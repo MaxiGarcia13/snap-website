@@ -5,6 +5,6 @@ export default async function initRoutes(fastify: FastifyInstance) {
   await fastify.register(websiteToBlobImg);
 
   fastify.get('/', async (_, reply) => {
-    return reply.status(200).send({ message: 'Hello World' });
+    return reply.status(200).send({ message: 'Snap Website API' });
   });
 }
