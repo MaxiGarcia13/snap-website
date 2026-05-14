@@ -14,7 +14,7 @@ await fastify.register(rateLimit, {
 
 initRoutes(fastify);
 
-fastify.listen({ port: 3000 })
+fastify.listen({ port: typeof process.env.PORT === 'string' ? Number.parseInt(process.env.PORT) : 3000 })
   .catch((err) => {
     fastify.log.error(err);
     process.exit(1);
