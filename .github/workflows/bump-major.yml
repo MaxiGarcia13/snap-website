@@ -1,0 +1,21 @@
+name: Bump major on main
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  lint:
+    uses: ./.github/workflows/lint.yml
+
+  bump:
+    needs: lint
+    uses: MaxiGarcia13/gh-actions/.github/workflows/bump-major.yml@main
+    secrets: inherit
+
+  deploy:
+    needs: bump
+    uses: MaxiGarcia13/gh-actions/.github/workflows/deploy-to-vercel.yml@main
+    secrets: inherit

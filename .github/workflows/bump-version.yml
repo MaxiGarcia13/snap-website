@@ -1,0 +1,22 @@
+name: Lint + E2E tests + Bump version + Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  lint:
+    uses: ./.github/workflows/lint.yml
+
+  bump:
+    needs: lint
+    uses: MaxiGarcia13/gh-actions/.github/workflows/bump-version.yml@main
+
+  deploy:
+    needs: bump
+    uses: MaxiGarcia13/gh-actions/.github/workflows/deploy-to-vercel.yml@main
+    secrets: inherit
