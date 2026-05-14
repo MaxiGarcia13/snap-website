@@ -1,13 +1,12 @@
 import process from 'node:process';
 import Fastify from 'fastify';
+import initRoutes from './routes/index.js';
 
 const fastify = Fastify({
   logger: true,
 });
 
-fastify.get('/', async () => {
-  return { hello: 'world from snap-html' };
-});
+initRoutes(fastify);
 
 try {
   await fastify.listen({ port: 3000 });
