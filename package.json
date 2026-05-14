@@ -22,10 +22,20 @@
     "rest-api"
   ],
   "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "tsx watch src/server.ts",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
+  "dependencies": {
+    "fastify": "^5.8.5"
+  },
   "devDependencies": {
-    "@maxigarcia/eslint-config": "^1.5.0"
+    "@maxigarcia/eslint-config": "^1.5.0",
+    "@types/node": "^22.15.21",
+    "tsx": "^4.19.4",
+    "typescript": "^6.0.3"
   }
 }
