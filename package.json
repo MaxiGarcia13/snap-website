@@ -29,9 +29,9 @@
     "dev": "tsx watch src/server.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "concurrently -k --success command-test -n server,test \"npm:test:server\" \"npm:test:run\"",
-    "test:server": "PORT=3456 tsx src/server.ts",
-    "test:run": "wait-on http://127.0.0.1:3456/info && BASE_URL=http://127.0.0.1:3456 tsx --test e2e/**/*.test.ts",
+    "test": "concurrently -k -s first --kill-timeout 5000 -n test,server \"npm:test:run\" \"npm:test:server\"",
+    "test:server": "HOST=127.0.0.1 PORT=3456 tsx src/server.ts",
+    "test:run": "wait-on -t 60000 http-get://127.0.0.1:3456/info && BASE_URL=http://127.0.0.1:3456 tsx --test e2e/**/*.test.ts",
     "install:chrome": "npx puppeteer browsers install chrome"
   },
   "dependencies": {

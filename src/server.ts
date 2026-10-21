@@ -18,7 +18,11 @@ const port = typeof process.env.PORT === 'string'
   ? Number.parseInt(process.env.PORT)
   : 3000;
 
-fastify.listen({ port }).catch((err) => {
+fastify.listen({
+  port,
+  // Prefer HOST when set (e2e binds 127.0.0.1 so wait-on does not miss an IPv6-only listen).
+  ...(process.env.HOST ? { host: process.env.HOST } : {}),
+}).catch((err) => {
   fastify.log.error(err);
   process.exit(1);
 });
