@@ -34,10 +34,6 @@ export default async function websiteToBlobImg(fastify: FastifyInstance) {
 
     const url = decodeURIComponent(urlParam);
 
-    if (wait && typeof Number(wait) === 'number' && !Number.isNaN(Number(wait))) {
-      await new Promise((resolve) => setTimeout(resolve, Number(wait)));
-    }
-
     if (!(formatParam in SCREENSHOT_FORMAT_TO_MIME)) {
       return reply.status(400).send({
         error: 'Invalid format',
@@ -56,6 +52,10 @@ export default async function websiteToBlobImg(fastify: FastifyInstance) {
       await page.goto(url);
       await page.content();
       await page.waitForNetworkIdle();
+
+      if (wait && typeof Number(wait) === 'number' && !Number.isNaN(Number(wait))) {
+        await new Promise((resolve) => setTimeout(resolve, Number(wait)));
+      }
 
       const blob = await page.screenshot({ type: format });
       await browser.close();
