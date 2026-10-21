@@ -1,5 +1,5 @@
 import process from 'node:process';
-import { buildApp } from './app.js';
+import { buildApp } from './build-app.js';
 
 const fastify = await buildApp();
 

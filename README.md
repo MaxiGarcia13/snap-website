@@ -95,7 +95,7 @@ Check this example with this URL: [Fetcher](https://fetcherapi.vercel.app/?url=a
 
 ## Rate limiting
 
-Requests are limited to **20 per minute** per client (see `src/app.ts`).
+Requests are limited to **20 per minute** per client (see `src/build-app.ts`).
 
 ## License
 

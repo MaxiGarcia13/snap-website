@@ -1,7 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import assert from 'node:assert/strict';
 import { after, before, describe, it } from 'node:test';
-import { buildApp } from '../src/app.js';
+import { buildApp } from '../src/build-app.js';
 
 const PAGE = 'data:text/html,<html><body><h1>snap</h1></body></html>';
 const encodedPage = encodeURIComponent(PAGE);
