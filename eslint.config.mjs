@@ -4,5 +4,6 @@ export default eslintConfig({
   typescript: true,
   rules: {
     'antfu/no-top-level-await': 'off',
+    'test/no-import-node-test': 'off',
   },
 });

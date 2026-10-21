@@ -29,6 +29,7 @@
     "dev": "tsx watch src/server.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "test": "tsx --test e2e/**/*.test.ts",
     "install:chrome": "npx puppeteer browsers install chrome"
   },
   "dependencies": {
