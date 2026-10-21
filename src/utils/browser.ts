@@ -31,5 +31,11 @@ export async function getBrowser({ width = 1280, height = 720 }: { width?: numbe
 
   const puppeteer = await import('puppeteer');
 
-  return puppeteer.launch({ defaultViewport, headless: true });
+  // GitHub Actions (and similar CI) run as an unprivileged user; Chrome's
+  // sandbox needs extra capabilities that aren't available there.
+  const args = process.env.CI
+    ? ['--no-sandbox', '--disable-setuid-sandbox']
+    : undefined;
+
+  return puppeteer.launch({ defaultViewport, headless: true, args });
 }
