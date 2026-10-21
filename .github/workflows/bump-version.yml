@@ -23,3 +23,12 @@ jobs:
     with:
       deployment_environment: Production
       deployment_url: https://snap-website-api.vercel.app
+
+  release-notes:
+    name: Create Release Notes
+    if: ${{ needs.bump.outputs.tag != '' }}
+    needs: bump
+    uses: MaxiGarcia13/gh-actions/.github/workflows/create-release-notes.yml@main
+    with:
+      tag: ${{ needs.bump.outputs.tag }}
+      default_branch: main
