@@ -1,5 +1,5 @@
 import type { AppInfo } from '../types/app.js';
-import packageJson from '../../package.json' with { type: 'json' };
+import packageJson from '@/package.json' with { type: 'json' };
 import { WEBSITE_TO_BLOB_IMG_ENDPOINT } from './endpoints/website-to-blob-img.js';
 
 export const APP_INFO: AppInfo = {

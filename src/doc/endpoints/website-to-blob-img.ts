@@ -1,4 +1,4 @@
-import type { AppEndpoint } from '../../types/app.js';
+import type { AppEndpoint } from '@/types/app.js';
 
 export const WEBSITE_TO_BLOB_IMG_ENDPOINT: AppEndpoint = {
   path: '/website-to-blob-img',
