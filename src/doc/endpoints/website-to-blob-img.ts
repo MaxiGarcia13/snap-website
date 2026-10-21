@@ -30,5 +30,10 @@ export const WEBSITE_TO_BLOB_IMG_ENDPOINT: AppEndpoint = {
       required: false,
       default: 720,
     },
+    wait: {
+      type: 'number',
+      description: 'Extra settle time in milliseconds after the page reaches network idle, useful for lazy-loaded content',
+      required: false,
+    },
   },
 };

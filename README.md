@@ -67,12 +67,13 @@ Returns a screenshot of the given page as binary image data.
 
 **Query parameters**
 
-| Name     | Required | Description                                       |
-| -------- | -------- | ------------------------------------------------- |
-| `url`    | Yes      | Page to capture (must be loadable by the server). |
-| `format` | No       | `png` (default), `jpeg`, or `webp`.               |
-| `width`  | No       | Viewport width in pixels (default **1280**).      |
-| `height` | No       | Viewport height in pixels (default **720**).      |
+| Name     | Required | Description                                                                                        |
+| -------- | -------- | -------------------------------------------------------------------------------------------------- |
+| `url`    | Yes      | Page to capture (must be loadable by the server).                                                  |
+| `format` | No       | `png` (default), `jpeg`, or `webp`.                                                                |
+| `width`  | No       | Viewport width in pixels (default **1280**).                                                       |
+| `height` | No       | Viewport height in pixels (default **720**).                                                       |
+| `wait`   | No       | Extra settle time in ms after network idle (for lazy-loaded content). Omitted means no extra wait. |
 
 **Success**
 

@@ -6,6 +6,7 @@ interface WebsiteToBlobImgQuery {
   format?: 'png' | 'jpeg' | 'webp';
   width?: number;
   height?: number;
+  wait?: number;
 }
 
 const SCREENSHOT_FORMAT_TO_MIME: Record<NonNullable<WebsiteToBlobImgQuery['format']>, string> = {
@@ -24,6 +25,7 @@ export default async function websiteToBlobImg(fastify: FastifyInstance) {
       format: formatParam = 'png',
       width = 1280,
       height = 720,
+      wait = undefined,
     } = request.query;
 
     if (!url) {
@@ -48,7 +50,9 @@ export default async function websiteToBlobImg(fastify: FastifyInstance) {
       await page.goto(url);
       await page.waitForNetworkIdle();
 
-      await new Promise((r) => setTimeout(r, 1500));
+      if (typeof Number(wait) === 'number') {
+        await new Promise((resolve) => setTimeout(resolve, Number(wait)));
+      }
 
       const blob = await page.screenshot({ type: format });
       await browser.close();
