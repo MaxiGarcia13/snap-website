@@ -4,8 +4,6 @@ import chromium from '@sparticuz/chromium';
 import puppeteerCore from 'puppeteer-core';
 
 export async function getBrowser({ width = 1280, height = 720 }: { width?: number; height?: number }) {
-  const headless = true;
-
   const defaultViewport: Viewport = {
     width,
     height,
@@ -16,13 +14,14 @@ export async function getBrowser({ width = 1280, height = 720 }: { width?: numbe
 
   if (process.env.IS_SERVERLESS) {
     const executablePath = await chromium.executablePath();
+    const headless = 'shell' as const;
 
     chromium.setGraphicsMode = false;
 
     return puppeteerCore.launch({
       args: await puppeteerCore.defaultArgs({
         args: chromium.args,
-        headless: 'shell',
+        headless,
       }),
       defaultViewport,
       executablePath,
@@ -32,5 +31,5 @@ export async function getBrowser({ width = 1280, height = 720 }: { width?: numbe
 
   const puppeteer = await import('puppeteer');
 
-  return puppeteer.launch({ defaultViewport, headless });
+  return puppeteer.launch({ defaultViewport, headless: true });
 }

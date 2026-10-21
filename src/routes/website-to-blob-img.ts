@@ -44,26 +44,29 @@ export default async function websiteToBlobImg(fastify: FastifyInstance) {
     const format = formatParam as keyof typeof SCREENSHOT_FORMAT_TO_MIME;
     const contentType = SCREENSHOT_FORMAT_TO_MIME[format];
 
+    let browser: Awaited<ReturnType<typeof getBrowser>> | undefined;
+
     try {
-      const browser = await getBrowser({ width: Number(width), height: Number(height) });
+      browser = await getBrowser({ width: Number(width), height: Number(height) });
 
       const page = await browser.newPage();
 
       await page.goto(url);
       await page.waitForNetworkIdle();
 
-      if (typeof Number(wait) === 'number') {
+      if (typeof Number(wait) === 'number' && !Number.isNaN(Number(wait))) {
         await new Promise((resolve) => setTimeout(resolve, Number(wait)));
       }
 
       const blob = await page.screenshot({ type: format });
-      await browser.close();
 
       return reply.type(contentType).send(blob);
     } catch (error) {
       console.error(error);
       const message = error instanceof Error ? error.message : 'Failed to capture screenshot';
       return reply.status(500).send({ error: message });
+    } finally {
+      await browser?.close();
     }
   });
 }
