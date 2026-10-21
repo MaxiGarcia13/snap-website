@@ -30,5 +30,11 @@ export const WEBSITE_TO_BLOB_IMG_ENDPOINT: AppEndpoint = {
       required: false,
       default: 720,
     },
+    wait: {
+      type: 'number',
+      description: 'The number of milliseconds to wait before capturing the screenshot',
+      required: false,
+      default: undefined,
+    },
   },
 };
