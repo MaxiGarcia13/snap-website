@@ -6,6 +6,7 @@ interface WebsiteToBlobImgQuery {
   format?: 'png' | 'jpeg' | 'webp';
   width?: number;
   height?: number;
+  wait?: number;
 }
 
 const SCREENSHOT_FORMAT_TO_MIME: Record<NonNullable<WebsiteToBlobImgQuery['format']>, string> = {
@@ -24,10 +25,15 @@ export default async function websiteToBlobImg(fastify: FastifyInstance) {
       format: formatParam = 'png',
       width = 1280,
       height = 720,
+      wait,
     } = request.query;
 
     if (!url) {
       return reply.status(400).send({ error: 'URL is required' });
+    }
+
+    if (wait && typeof Number(wait) === 'number' && !Number.isNaN(Number(wait))) {
+      await new Promise((resolve) => setTimeout(resolve, Number(wait)));
     }
 
     if (!(formatParam in SCREENSHOT_FORMAT_TO_MIME)) {
