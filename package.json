@@ -32,11 +32,11 @@
     "install:chrome": "npx puppeteer browsers install chrome"
   },
   "dependencies": {
-    "@fastify/cors": "^11.2.0",
-    "@fastify/rate-limit": "^10.3.0",
-    "@sparticuz/chromium": "^148.0.0",
-    "fastify": "^5.8.5",
-    "puppeteer-core": "^24.43.1"
+    "@fastify/cors": "^11.3.1",
+    "@fastify/rate-limit": "^11.2.1",
+    "@sparticuz/chromium": "^153.0.0",
+    "fastify": "^5.12.7",
+    "puppeteer-core": "^25.15.0"
   },
   "devDependencies": {
     "@maxigarcia/eslint-config": "^1.14.1",
