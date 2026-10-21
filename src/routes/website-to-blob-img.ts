@@ -48,7 +48,7 @@ export default async function websiteToBlobImg(fastify: FastifyInstance) {
       await page.goto(url);
       await page.waitForNetworkIdle();
 
-      await new Promise((r) => setTimeout(r, 500));
+      await new Promise((r) => setTimeout(r, 1500));
 
       const blob = await page.screenshot({ type: format });
       await browser.close();
