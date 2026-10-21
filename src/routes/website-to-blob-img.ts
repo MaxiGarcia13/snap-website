@@ -21,16 +21,18 @@ export default async function websiteToBlobImg(fastify: FastifyInstance) {
     reply: FastifyReply,
   ) => {
     const {
-      url,
+      url: urlParam,
       format: formatParam = 'png',
       width = 1280,
       height = 720,
       wait = undefined,
     } = request.query;
 
-    if (!url) {
+    if (!urlParam) {
       return reply.status(400).send({ error: 'URL is required' });
     }
+
+    const url = decodeURIComponent(urlParam);
 
     if (!(formatParam in SCREENSHOT_FORMAT_TO_MIME)) {
       return reply.status(400).send({
