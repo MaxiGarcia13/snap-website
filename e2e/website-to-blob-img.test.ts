@@ -1,7 +1,8 @@
-import type { FastifyInstance } from 'fastify';
 import assert from 'node:assert/strict';
-import { after, before, describe, it } from 'node:test';
-import { buildApp } from '../src/build-app.js';
+import process from 'node:process';
+import { describe, it } from 'node:test';
+
+const BASE_URL = process.env.BASE_URL ?? 'http://127.0.0.1:3456';
 
 const PAGE = 'data:text/html,<html><body><h1>snap</h1></body></html>';
 const encodedPage = encodeURIComponent(PAGE);
@@ -16,42 +17,42 @@ function bytesEqual(actual: Uint8Array, expected: number[]) {
   return expected.every((byte, index) => actual[index] === byte);
 }
 
+async function get(path: string) {
+  const res = await fetch(`${BASE_URL}${path}`);
+  const rawPayload = Buffer.from(await res.arrayBuffer());
+
+  return {
+    statusCode: res.status,
+    headers: {
+      'content-type': res.headers.get('content-type'),
+    },
+    rawPayload,
+    async json() {
+      return JSON.parse(rawPayload.toString('utf8')) as unknown;
+    },
+  };
+}
+
 describe('GET /website-to-blob-img', () => {
-  let app: FastifyInstance;
-
-  before(async () => {
-    app = await buildApp({ disableRateLimit: true, logger: false });
-  });
-
-  after(async () => {
-    await app.close();
-  });
-
   it('returns 400 when url is missing', async () => {
-    const res = await app.inject({ method: 'GET', url: '/website-to-blob-img' });
+    const res = await get('/website-to-blob-img');
 
     assert.equal(res.statusCode, 400);
-    assert.deepEqual(res.json(), { error: 'URL is required' });
+    assert.deepEqual(await res.json(), { error: 'URL is required' });
   });
 
   it('returns 400 when format is invalid', async () => {
-    const res = await app.inject({
-      method: 'GET',
-      url: `/website-to-blob-img?url=${encodedPage}&format=gif`,
-    });
+    const res = await get(`/website-to-blob-img?url=${encodedPage}&format=gif`);
 
     assert.equal(res.statusCode, 400);
-    assert.deepEqual(res.json(), {
+    assert.deepEqual(await res.json(), {
       error: 'Invalid format',
       allowed: ['png', 'jpeg', 'webp'],
     });
   });
 
   it('defaults to png when format is omitted', { timeout: 60_000 }, async () => {
-    const res = await app.inject({
-      method: 'GET',
-      url: `/website-to-blob-img?url=${encodedPage}`,
-    });
+    const res = await get(`/website-to-blob-img?url=${encodedPage}`);
 
     assert.equal(res.statusCode, 200);
     assert.equal(res.headers['content-type'], 'image/png');
@@ -60,10 +61,7 @@ describe('GET /website-to-blob-img', () => {
   });
 
   it('returns png when format=png', { timeout: 60_000 }, async () => {
-    const res = await app.inject({
-      method: 'GET',
-      url: `/website-to-blob-img?url=${encodedPage}&format=png`,
-    });
+    const res = await get(`/website-to-blob-img?url=${encodedPage}&format=png`);
 
     assert.equal(res.statusCode, 200);
     assert.equal(res.headers['content-type'], 'image/png');
@@ -71,10 +69,7 @@ describe('GET /website-to-blob-img', () => {
   });
 
   it('returns jpeg when format=jpeg', { timeout: 60_000 }, async () => {
-    const res = await app.inject({
-      method: 'GET',
-      url: `/website-to-blob-img?url=${encodedPage}&format=jpeg`,
-    });
+    const res = await get(`/website-to-blob-img?url=${encodedPage}&format=jpeg`);
 
     assert.equal(res.statusCode, 200);
     assert.equal(res.headers['content-type'], 'image/jpeg');
@@ -82,10 +77,7 @@ describe('GET /website-to-blob-img', () => {
   });
 
   it('returns webp when format=webp', { timeout: 60_000 }, async () => {
-    const res = await app.inject({
-      method: 'GET',
-      url: `/website-to-blob-img?url=${encodedPage}&format=webp`,
-    });
+    const res = await get(`/website-to-blob-img?url=${encodedPage}&format=webp`);
 
     assert.equal(res.statusCode, 200);
     assert.equal(res.headers['content-type'], 'image/webp');
@@ -94,10 +86,7 @@ describe('GET /website-to-blob-img', () => {
   });
 
   it('accepts custom width and height', { timeout: 60_000 }, async () => {
-    const res = await app.inject({
-      method: 'GET',
-      url: `/website-to-blob-img?url=${encodedPage}&width=800&height=600`,
-    });
+    const res = await get(`/website-to-blob-img?url=${encodedPage}&width=800&height=600`);
 
     assert.equal(res.statusCode, 200);
     assert.equal(res.headers['content-type'], 'image/png');
@@ -106,10 +95,7 @@ describe('GET /website-to-blob-img', () => {
   });
 
   it('accepts wait', { timeout: 60_000 }, async () => {
-    const res = await app.inject({
-      method: 'GET',
-      url: `/website-to-blob-img?url=${encodedPage}&wait=100`,
-    });
+    const res = await get(`/website-to-blob-img?url=${encodedPage}&wait=100`);
 
     assert.equal(res.statusCode, 200);
     assert.equal(res.headers['content-type'], 'image/png');
@@ -118,10 +104,7 @@ describe('GET /website-to-blob-img', () => {
 
   it('captures a live page that may never become network idle', { timeout: 40_000 }, async () => {
     const startedAt = Date.now();
-    const res = await app.inject({
-      method: 'GET',
-      url: `/website-to-blob-img?url=${encodeURIComponent(LIVE_PAGE)}`,
-    });
+    const res = await get(`/website-to-blob-img?url=${encodeURIComponent(LIVE_PAGE)}`);
     const elapsed = Date.now() - startedAt;
 
     assert.equal(res.statusCode, 200);
@@ -131,10 +114,9 @@ describe('GET /website-to-blob-img', () => {
   });
 
   it('accepts all parameters together', { timeout: 60_000 }, async () => {
-    const res = await app.inject({
-      method: 'GET',
-      url: `/website-to-blob-img?url=${encodedPage}&format=jpeg&width=640&height=480&wait=50`,
-    });
+    const res = await get(
+      `/website-to-blob-img?url=${encodedPage}&format=jpeg&width=640&height=480&wait=50`,
+    );
 
     assert.equal(res.statusCode, 200);
     assert.equal(res.headers['content-type'], 'image/jpeg');

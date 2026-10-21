@@ -37,6 +37,7 @@ Optional [dotenv](https://nodejs.org/api/cli.html#--env-filefile)-style files ar
 | `npm run install:chrome` | Install Chrome for local Puppeteer     |
 | `npm run lint`           | ESLint                                 |
 | `npm run lint:fix`       | ESLint with auto-fix                   |
+| `npm test`               | Start the server and run e2e tests     |
 
 ## Running
 
@@ -95,7 +96,7 @@ Check this example with this URL: [Fetcher](https://fetcherapi.vercel.app/?url=a
 
 ## Rate limiting
 
-Requests are limited to **20 per minute** per client (see `src/build-app.ts`).
+Requests are limited to **20 per minute** per client (see `src/server.ts`).
 
 ## License
 

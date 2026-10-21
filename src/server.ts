@@ -1,10 +1,24 @@
 import process from 'node:process';
-import { buildApp } from './build-app.js';
+import rateLimit from '@fastify/rate-limit';
+import Fastify from 'fastify';
+import initRoutes from './routes/index.js';
 
-const fastify = await buildApp();
+const fastify = Fastify({
+  logger: true,
+});
 
-fastify.listen({ port: typeof process.env.PORT === 'string' ? Number.parseInt(process.env.PORT) : 3000 })
-  .catch((err) => {
-    fastify.log.error(err);
-    process.exit(1);
-  });
+await fastify.register(rateLimit, {
+  max: 20,
+  timeWindow: '1 minute',
+});
+
+await initRoutes(fastify);
+
+const port = typeof process.env.PORT === 'string'
+  ? Number.parseInt(process.env.PORT)
+  : 3000;
+
+fastify.listen({ port }).catch((err) => {
+  fastify.log.error(err);
+  process.exit(1);
+});

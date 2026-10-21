@@ -29,7 +29,9 @@
     "dev": "tsx watch src/server.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "tsx --test e2e/**/*.test.ts",
+    "test": "concurrently -k --success command-test -n server,test \"npm:test:server\" \"npm:test:run\"",
+    "test:server": "PORT=3456 tsx src/server.ts",
+    "test:run": "wait-on http://127.0.0.1:3456/info && BASE_URL=http://127.0.0.1:3456 tsx --test e2e/**/*.test.ts",
     "install:chrome": "npx puppeteer browsers install chrome"
   },
   "dependencies": {
@@ -42,9 +44,11 @@
   "devDependencies": {
     "@maxigarcia/eslint-config": "^1.14.1",
     "@types/node": "^26.6.5",
+    "concurrently": "^10.0.6",
     "puppeteer": "^25.15.0",
     "tsc-alias": "^1.9.8",
     "tsx": "^4.23.15",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "wait-on": "^9.5.1"
   }
 }
