@@ -5,6 +5,7 @@ import { buildApp } from '../src/app.js';
 
 const PAGE = 'data:text/html,<html><body><h1>snap</h1></body></html>';
 const encodedPage = encodeURIComponent(PAGE);
+const LIVE_PAGE = 'https://runjs-playground.vercel.app/';
 
 const PNG_SIG = [0x89, 0x50, 0x4E, 0x47];
 const JPEG_SIG = [0xFF, 0xD8, 0xFF];
@@ -113,6 +114,20 @@ describe('GET /website-to-blob-img', () => {
     assert.equal(res.statusCode, 200);
     assert.equal(res.headers['content-type'], 'image/png');
     assert.ok(res.rawPayload.length > 100);
+  });
+
+  it('captures a live page that may never become network idle', { timeout: 40_000 }, async () => {
+    const startedAt = Date.now();
+    const res = await app.inject({
+      method: 'GET',
+      url: `/website-to-blob-img?url=${encodeURIComponent(LIVE_PAGE)}`,
+    });
+    const elapsed = Date.now() - startedAt;
+
+    assert.equal(res.statusCode, 200);
+    assert.equal(res.headers['content-type'], 'image/png');
+    assert.ok(bytesEqual(res.rawPayload.subarray(0, 4), PNG_SIG));
+    assert.ok(elapsed < 25_000);
   });
 
   it('accepts all parameters together', { timeout: 60_000 }, async () => {

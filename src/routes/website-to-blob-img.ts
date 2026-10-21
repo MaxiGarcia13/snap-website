@@ -15,6 +15,10 @@ const SCREENSHOT_FORMAT_TO_MIME: Record<NonNullable<WebsiteToBlobImgQuery['forma
   webp: 'image/webp',
 };
 
+function isTimeoutError(error: unknown): boolean {
+  return error instanceof Error && error.name === 'TimeoutError';
+}
+
 export default async function websiteToBlobImg(fastify: FastifyInstance) {
   fastify.get('/website-to-blob-img', async (
     request: FastifyRequest<{ Querystring: WebsiteToBlobImgQuery }>,
@@ -51,8 +55,18 @@ export default async function websiteToBlobImg(fastify: FastifyInstance) {
 
       const page = await browser.newPage();
 
-      await page.goto(url);
-      await page.waitForNetworkIdle();
+      // `load` waits for every subresource. Analytics, websockets, and long-polling
+      // often never finish, so navigation only waits for the DOM.
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+
+      try {
+        await page.waitForNetworkIdle({ idleTime: 500, timeout: 10_000 });
+      } catch (error) {
+        // A page that never goes quiet should still be captured.
+        if (!isTimeoutError(error)) {
+          throw error;
+        }
+      }
 
       if (typeof Number(wait) === 'number' && !Number.isNaN(Number(wait))) {
         await new Promise((resolve) => setTimeout(resolve, Number(wait)));
