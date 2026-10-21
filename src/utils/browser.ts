@@ -20,11 +20,10 @@ export async function getBrowser({ width = 1280, height = 720 }: { width?: numbe
     chromium.setGraphicsMode = false;
 
     return puppeteerCore.launch({
-      args: puppeteerCore
-        .defaultArgs({
-          args: chromium.args,
-          headless: 'shell',
-        }),
+      args: await puppeteerCore.defaultArgs({
+        args: chromium.args,
+        headless: 'shell',
+      }),
       defaultViewport,
       executablePath,
       headless,
