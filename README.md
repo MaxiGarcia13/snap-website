@@ -59,6 +59,10 @@ The server listens on **port 3000** unless `PORT` is set.
 
 ### `GET /`
 
+Interactive HTML playground with endpoint docs and a form to capture screenshots. Open [http://localhost:3000/](http://localhost:3000/) while the server is running. Also available at `/playground`.
+
+### `GET /info`
+
 Returns JSON describing the service, version, and available endpoints (including query parameters for `/website-to-blob-img`).
 
 ### `GET /website-to-blob-img`
@@ -91,7 +95,7 @@ Check this example with this URL: [Fetcher](https://fetcherapi.vercel.app/?url=a
 
 ## Rate limiting
 
-Requests are limited to **10 per minute** per client (see `src/server.ts`).
+Requests are limited to **20 per minute** per client (see `src/app.ts`).
 
 ## License
 
