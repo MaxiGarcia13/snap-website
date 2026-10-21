@@ -45,17 +45,10 @@ export default async function websiteToBlobImg(fastify: FastifyInstance) {
 
       const page = await browser.newPage();
 
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30_000 });
+      await page.goto(url);
+      await page.waitForNetworkIdle();
 
-      // Prefer network idle, but don't fail the request if the page never goes quiet
-      // (analytics, websockets, Astro island hydration, etc.).
-      try {
-        await page.waitForNetworkIdle({ idleTime: 500, timeout: 10_000 });
-      } catch {
-        // continue — settle delay below still gives lazy content a chance
-      }
-
-      await new Promise((r) => setTimeout(r, 1500));
+      await new Promise((r) => setTimeout(r, 500));
 
       const blob = await page.screenshot({ type: format });
       await browser.close();
