@@ -21,16 +21,18 @@ export default async function websiteToBlobImg(fastify: FastifyInstance) {
     reply: FastifyReply,
   ) => {
     const {
-      url,
+      url: urlParam,
       format: formatParam = 'png',
       width = 1280,
       height = 720,
       wait,
     } = request.query;
 
-    if (!url) {
+    if (!urlParam) {
       return reply.status(400).send({ error: 'URL is required' });
     }
+
+    const url = decodeURIComponent(urlParam);
 
     if (wait && typeof Number(wait) === 'number' && !Number.isNaN(Number(wait))) {
       await new Promise((resolve) => setTimeout(resolve, Number(wait)));
